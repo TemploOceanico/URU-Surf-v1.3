@@ -2,7 +2,7 @@
   "name": "Surf Uruguay - Templo Oceánico",
   "short_name": "Surf UY",
   "description": "Reporte de Olas y Viento para Uruguay",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0c4a6e",
