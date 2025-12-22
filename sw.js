@@ -1,4 +1,4 @@
-const CACHE_NAME = 'surf-v5-final-fast';
+const CACHE_NAME = 'surf-v1.3-final';
 
 self.addEventListener('install', (e) => {
     self.skipWaiting();
@@ -14,8 +14,6 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-    // Dejar pasar todas las peticiones para máxima velocidad de datos
+    // No interceptamos para asegurar que el contenido dinámico cargue siempre
     return;
 });
-
-
