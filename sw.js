@@ -1,11 +1,12 @@
-const CACHE_NAME = 'surf-v1.3-stable';
+const CACHE_NAME = 'surf-templo-v1';
 
-self.addEventListener('install', (e) => {
+self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-self.addEventListener('activate', (e) => {
-    e.waitUntil(
+self.addEventListener('activate', (event) => {
+    // Limpia cualquier residuo viejo que tranque la carga
+    event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(keys.map(key => caches.delete(key)));
         })
@@ -13,7 +14,7 @@ self.addEventListener('activate', (e) => {
     return self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-    // No interferir con las peticiones para que siempre carguen datos reales
-    return;
+// Esta función permite que la app funcione siempre conectada a los datos reales
+self.addEventListener('fetch', (event) => {
+    return; 
 });
