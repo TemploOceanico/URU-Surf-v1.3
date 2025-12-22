@@ -1,14 +1,14 @@
 {
   "name": "Surf Uruguay - Templo Oceánico",
-  "short_name": "Surf UY",
-  "description": "Reporte de Olas y Viento para Uruguay",
-  "start_url": "./index.html",
+  "short_name": "Surf Uruguay",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0c4a6e",
+  "background_color": "#082f49",
+  "theme_color": "#082f49",
+  "description": "Reporte de Surf en Uruguay. Olas, viento y calidad de spots.",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3144/3144860.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3144/3144976.png",
       "sizes": "512x512",
       "type": "image/png"
     }
