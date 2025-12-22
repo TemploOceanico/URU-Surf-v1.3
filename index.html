@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" oncontextmenu="return false">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surf Report: Uruguay - Templo Oceánico</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#082f49">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado'))
+                    .catch(err => console.error('Error al registrar SW', err));
+            });
+        }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        body {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+    <header class="bg-sky-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-water text-3xl text-cyan-400"></i>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold leading-none">Surf Uruguay</h1>
+                    <p class="text-xs text-sky-300">Olas, Viento, Rachas y Período</p>
+                </div>
+            </div>
+            <div class="flex items-center bg-sky-800 rounded-lg p-1 border border-sky-600">
+                <i class="fas fa-map-marker-alt ml-3 text-cyan-400"></i>
+                <select id="location-selector" class="bg-transparent text-white font-bold text-sm md:text-base py-2 px-4 outline-none cursor-pointer w-full md:w-auto">
+                    <option value="rocha" class="text-slate-800">Rocha (La Paloma)</option>
+                    <option value="maldonado" class="text-slate-800">Maldonado (Punta del Este)</option>
+                    <option value="canelones" class="text-slate-800">Canelones (Costa de Oro)</option>
+                </select>
+            </div>
+            <div class="text-center md:text-right hidden md:block">
+                <p class="text-xs text-sky-300">Última actualización</p>
+                <p id="datetime-display" class="text-sm font-semibold capitalize">--:--</p>
+            </div>
+        </div>
+    </header>
+
+    </body>
+<script>
+    // Aquí va toda tu lógica original de JavaScript que ya tienes configurada
+</script>
+</html>
