@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surf Report: Uruguay - Templo Oceánico</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#082f49">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,7 +32,6 @@
         body { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
     </style>
     <script>
-        // Protección de inspector
         document.addEventListener('keydown', function(e) {
             if(e.key == 'F12' || (e.ctrlKey && e.shiftKey && e.key == 'I') || (e.ctrlKey && e.shiftKey && e.key == 'J') || (e.ctrlKey && e.key == 'U')) {
                 e.preventDefault();
@@ -63,50 +73,60 @@
                     <i class="fas fa-circle-notch fa-spin text-3xl"></i>
                     <span>Cargando reporte...</span>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                    <div class="p-4 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition">
                         <div id="weather-icon" class="text-3xl mb-2 text-gray-400"><i class="fas fa-minus"></i></div>
                         <p class="text-xs font-bold text-slate-500 uppercase">Clima / Aire</p>
-                        <p id="weather-temp" class="text-xl font-bold">--°C</p>
+                        <p id="weather-temp" class="text-xl font-bold text-slate-800">--°C</p>
                         <p id="weather-desc" class="text-xs text-gray-500">--</p>
                     </div>
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <div class="p-4 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition">
                         <i class="fas fa-wind text-3xl mb-2 text-sky-600"></i>
                         <p class="text-xs font-bold text-slate-500 uppercase">Viento & Rachas</p>
-                        <p id="wind-speed" class="text-xl font-bold">--</p>
-                        <p class="text-xs text-red-500 font-semibold mt-1">Racha: <span id="wind-gusts">--</span></p>
+                        <div class="flex items-baseline justify-center space-x-1">
+                            <span id="wind-speed" class="text-xl font-bold text-slate-800">--</span>
+                            <span class="text-xs text-gray-500">km/h</span>
+                        </div>
+                        <p class="text-xs text-red-500 font-semibold mt-1"><i class="fas fa-bolt mr-1"></i>Racha: <span id="wind-gusts">--</span></p>
                         <p id="wind-dir" class="text-xs text-gray-500 mt-1">--</p>
                     </div>
-                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <div class="p-4 bg-blue-50 rounded-lg flex flex-col items-center justify-center border border-blue-100 shadow-inner">
                         <i class="fas fa-water text-3xl mb-2 text-blue-600"></i>
                         <p class="text-xs font-bold text-blue-800 uppercase">Mar & Temp Agua</p>
-                        <p id="wave-height" class="text-2xl font-extrabold text-blue-900">--m</p>
-                        <p id="wave-period" class="text-sm font-bold text-blue-700">--s</p>
-                        <div class="mt-2 bg-blue-200 px-2 py-1 rounded-full text-xs text-blue-900 font-semibold">
-                            Agua: <span id="water-temp">--°C</span>
+                        <div class="flex items-baseline justify-center space-x-2">
+                            <span id="wave-height" class="text-2xl font-extrabold text-blue-900">--m</span>
+                            <span id="wave-period" class="text-sm font-bold text-blue-700">--s</span>
+                        </div>
+                        <div class="mt-2 bg-blue-200 px-2 py-1 rounded-full text-xs text-blue-900 font-semibold flex items-center">
+                            <i class="fas fa-thermometer-half mr-1"></i> Agua: <span id="water-temp">--°C</span>
                         </div>
                     </div>
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <div class="p-4 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition">
                         <i id="quality-icon" class="fas fa-trophy text-3xl mb-2 text-gray-300"></i>
                         <p class="text-xs font-bold text-slate-500 uppercase">Calidad</p>
                         <p id="quality-text" class="text-lg font-bold text-gray-400">--</p>
+                        <p class="text-[10px] text-gray-400">Combinada</p>
                     </div>
-                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <div class="p-4 bg-slate-50 rounded-lg flex flex-col items-center justify-center border border-slate-100 hover:shadow-md transition">
                         <i class="fas fa-calendar-day text-3xl mb-2 text-purple-500"></i>
                         <p class="text-xs font-bold text-slate-500 uppercase">Mañana</p>
                         <div id="tomorrow-content"><p class="text-xs text-gray-400">Cargando...</p></div>
                     </div>
                 </div>
                 <div id="extended-forecast-container" class="mt-6 border-t border-slate-100 pt-4 hidden">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 text-left">Pronóstico Extendido (5 días)</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase mb-3 tracking-wider text-left">Pronóstico Extendido (Próximos 5 días)</h3>
                     <div id="extended-grid" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
                 </div>
             </div>
         </section>
 
         <section>
-            <h2 class="text-xl font-bold text-slate-700 mb-4 flex items-center"><i class="fas fa-list-alt mr-2 text-sky-600"></i>Detalle Próximas 48h</h2>
-            <div id="daily-forecast-container" class="space-y-6"></div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-slate-700 flex items-center"><i class="fas fa-list-alt mr-2 text-sky-600"></i>Detalle Próximas 48h</h2>
+            </div>
+            <div id="daily-forecast-container" class="space-y-6">
+                 <div class="text-center py-8 text-gray-500"><i class="fas fa-circle-notch fa-spin"></i> Cargando tabla...</div>
+            </div>
         </section>
 
         <section>
@@ -115,12 +135,18 @@
         </section>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12">
-        <div class="mb-4">
-            <h3 class="text-lg font-bold text-slate-100">Templo Oceánico <span class="text-sky-400">OM SHANTI OM</span></h3>
-            <p class="text-xs uppercase tracking-widest font-semibold">La Paloma, Rocha, Uruguay</p>
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm mt-12">
+        <div class="mb-8 flex flex-col items-center justify-center space-y-2">
+            <div class="w-16 h-1 bg-sky-500 rounded-full mb-2"></div>
+            <h3 class="text-lg md:text-xl font-bold text-slate-100 tracking-wide">
+                Templo Oceánico <span class="text-sky-400">OM SHANTI OM</span>
+            </h3>
+            <p class="text-xs md:text-sm text-slate-400 uppercase tracking-widest font-semibold">
+                <i class="fas fa-map-pin mr-1 text-red-400"></i> La Paloma, Rocha, Uruguay
+            </p>
+            <div class="w-16 h-1 bg-sky-500 rounded-full mt-2"></div>
         </div>
-        <p class="text-[10px] text-slate-500">Datos cortesía de Open-Meteo API.</p>
+        <p class="mb-2 text-xs text-slate-500">Datos: Open-Meteo. Observa siempre el mar antes de entrar.</p>
     </footer>
 
     <script>
@@ -133,45 +159,51 @@
 
         const BEACHES_DB = {
             maldonado: [
-                { name: 'Playa El Emir', desc: 'Fondo de roca/arena.', bestWind: ['W', 'NW', 'SW'], icon: 'fa-gem' },
-                { name: 'Montoya', desc: 'Olas consistentes.', bestWind: ['N', 'NW'], icon: 'fa-water' }
+                { id: 'emir', name: 'Playa El Emir', desc: 'Fondo de roca/arena. Aguanta viento.', bestWind: ['W', 'NW', 'SW'], icon: 'fa-gem', mapLink: '#' },
+                { id: 'montoya', name: 'Montoya', desc: 'La Barra. Olas consistentes.', bestWind: ['N', 'NW'], icon: 'fa-water', mapLink: '#' },
+                { id: 'bikini', name: 'Bikini (Manantiales)', desc: 'Bancos de arena buenos.', bestWind: ['N', 'NW'], icon: 'fa-umbrella-beach', mapLink: '#' }
             ],
             canelones: [
-                { name: 'El Pinar', desc: 'Bancos de arena.', bestWind: ['N', 'NW'], icon: 'fa-tree' }
+                { id: 'el_pinar', name: 'El Pinar', desc: 'Bancos de arena clásicos.', bestWind: ['N', 'NW'], icon: 'fa-tree', mapLink: '#' },
+                { id: 'atlantida', name: 'Atlántida', desc: 'Olas divertidas.', bestWind: ['N', 'NW'], icon: 'fa-building', mapLink: '#' }
             ],
             rocha: [
-                { name: 'Los Botes', desc: 'Clásico. Protegido del NE.', bestWind: ['N', 'NW', 'NE'], icon: 'fa-ship' },
-                { name: 'La Aguada', desc: 'Aguanta tamaño.', bestWind: ['N', 'NW', 'W'], icon: 'fa-water' },
-                { name: 'La Pedrera', desc: 'Tubos potentes.', bestWind: ['W', 'NW'], icon: 'fa-skull-crossbones' }
+                { id: 'los_botes', name: 'Los Botes', desc: 'El pico clásico. Protegido del NE.', bestWind: ['N', 'NW', 'NE'], icon: 'fa-ship', mapLink: '#' },
+                { id: 'la_aguada', name: 'La Aguada', desc: 'Playa abierta, aguanta tamaño.', bestWind: ['N', 'NW', 'W'], icon: 'fa-water', mapLink: '#' },
+                { id: 'balconada', name: 'La Balconada', desc: 'Olas tubulares.', bestWind: ['N', 'NW'], icon: 'fa-sun', mapLink: '#' },
+                { id: 'pedrera', name: 'La Pedrera', desc: 'Tubos potentes.', bestWind: ['W', 'NW'], icon: 'fa-skull-crossbones', mapLink: '#' }
             ]
         };
         
         let currentLocKey = 'rocha'; 
 
         function getCardinalDirection(d){const s=['N','NE','E','SE','S','SW','W','NW'];return s[Math.round(d/45)%8<0?Math.round(d/45)%8+8:Math.round(d/45)%8];}
-
-        async function fetchData(){
-            const{lat,lon}=LOCATIONS[currentLocKey];
-            // SOLUCIÓN AL CTRL+F5: Añadimos un timestamp para que el navegador no use el caché
-            const ts = new Date().getTime();
-            const wU=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=${TIMEZONE}&_=${ts}`;
-            const mU=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=${TIMEZONE}&_=${ts}`;
-            
-            try{
-                const[wR,mR]=await Promise.all([fetch(wU),fetch(mU)]);
-                const w = await wR.json();
-                const m = await mR.json();
-                updateUI(w, m);
-            }catch(e){console.error(e);}
+        
+        function getWeatherIconInfo(c){
+            if(c===0)return{icon:'fa-sun',label:'Despejado',color:'text-yellow-500'};
+            if([1,2,3].includes(c))return{icon:'fa-cloud-sun',label:'Nublado',color:'text-gray-400'};
+            return{icon:'fa-cloud',label:'Variable',color:'text-gray-500'};
         }
 
         function getQuality(wk,wd,wh,wp){
-            const wc=getCardinalDirection(wd); const ld=LOCATIONS[currentLocKey]; let s=5;
-            if(ld.offshore.includes(wc))s+=3; else if(ld.onshore.includes(wc))s-=3;
-            if(wh<0.4)s-=3; if(wp>8)s+=2;
-            if(s>=8) return {text:'Épica', color:'text-green-600', icon:'fa-fire'};
-            if(s>=5) return {text:'Buena', color:'text-teal-600', icon:'fa-thumbs-up'};
-            return {text:'Regular', color:'text-yellow-600', icon:'fa-minus-circle'};
+            const wc=getCardinalDirection(wd);const ld=LOCATIONS[currentLocKey];let s=5;
+            if(ld.offshore.includes(wc))s+=3;else if(ld.onshore.includes(wc))s-=3;
+            if(wh<0.4)s-=3;if(wp>8)s+=2;
+            if(s>=8)return{text:'Épica',color:'text-green-600',icon:'fa-fire'};
+            if(s>=5)return{text:'Buena',color:'text-teal-600',icon:'fa-thumbs-up'};
+            return{text:'Regular',color:'text-yellow-600',icon:'fa-minus-circle'};
+        }
+
+        async function fetchData(){
+            const{lat,lon}=LOCATIONS[currentLocKey];
+            // Cache busting para evitar que se tranquen los datos
+            const ts = new Date().getTime();
+            const wU=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=${TIMEZONE}&cb=${ts}`;
+            const mU=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=${TIMEZONE}&cb=${ts}`;
+            try{
+                const[wR,mR]=await Promise.all([fetch(wU),fetch(mU)]);
+                updateUI(await wR.json(),await mR.json());
+            }catch(e){console.error(e);}
         }
 
         function updateUI(w,m){
@@ -183,13 +215,15 @@
             const wp=m.hourly.wave_period[idx]||0;
             const q=getQuality(cw,cwd,wh,wp);
 
-            document.getElementById('main-verdict').innerHTML=`<i class="fas ${q.icon}"></i><span>¡Condición ${q.text}!</span>`;
-            document.getElementById('main-verdict').className=`text-2xl md:text-4xl font-bold mb-8 flex items-center justify-center gap-3 ${q.color}`;
+            const vd=document.getElementById('main-verdict');
+            vd.className=`text-2xl md:text-4xl font-bold mb-8 flex items-center justify-center gap-3 ${q.color}`;
+            vd.innerHTML=`<i class="fas ${q.icon}"></i><span>¡Condición ${q.text}!</span>`;
+
             document.getElementById('weather-temp').innerText=`${ct}°C`;
             document.getElementById('wind-speed').innerText=cw.toFixed(1);
             document.getElementById('wave-height').innerText=`${wh.toFixed(1)}m`;
             document.getElementById('wave-period').innerText=`${wp.toFixed(0)}s`;
-            document.getElementById('water-temp').innerText=`${m.hourly.sea_surface_temperature[idx] || 18}°C`;
+            document.getElementById('water-temp').innerText=`${m.hourly.sea_surface_temperature[idx] || 19}°C`;
             
             renderTable(w,m,idx);
             renderRecommendations(cwd);
@@ -213,7 +247,7 @@
             const c=document.getElementById('daily-forecast-container');
             c.innerHTML='';
             let html=`<div class="bg-white rounded-lg shadow border overflow-hidden"><table class="w-full text-sm text-left"><thead class="bg-slate-50 text-xs text-gray-500 uppercase"><tr><th class="px-3 py-2">Hora</th><th class="px-3 py-2">Viento</th><th class="px-3 py-2">Ola</th><th class="px-3 py-2 text-center">Cal.</th></tr></thead><tbody class="divide-y divide-slate-100">`;
-            for(let i=0;i<8;i++){
+            for(let i=0;i<10;i++){
                 const idx=sIdx+(i*3); if(idx>=48) break;
                 const d=new Date(w.hourly.time[idx]);
                 const ws=w.hourly.wind_speed_10m[idx];
@@ -238,11 +272,12 @@
         }
 
         document.getElementById('location-selector').addEventListener('change',(e)=>{currentLocKey=e.target.value; fetchData();});
-        function uT(){ document.getElementById('datetime-display').textContent=new Date().toLocaleString('es-UY',{hour:'2-digit',minute:'2-digit'}); }
+        function uT(){document.getElementById('datetime-display').textContent=new Date().toLocaleString('es-UY',{hour:'2-digit',minute:'2-digit'});}
         window.onload=()=>{uT(); fetchData(); setInterval(uT,60000);};
     </script>
 </body>
 </html>
+
 
 
 
