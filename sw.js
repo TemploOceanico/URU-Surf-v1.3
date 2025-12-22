@@ -1,6 +1,5 @@
-const CACHE_NAME = 'surf-uy-v1';
+const CACHE_NAME = 'surf-uy-v2'; // Cambiamos a v2 para forzar la actualización
 
-// Solo cacheamos la estructura básica
 const ASSETS = [
   './',
   './index.html',
@@ -11,17 +10,22 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
 });
 
 self.addEventListener('fetch', (event) => {
-  // Para las APIs de datos (Open-Meteo), siempre ir a la red primero
+  // Si la petición es para las APIs de Open-Meteo, NO usar caché, ir directo a internet
   if (event.request.url.includes('api.open-meteo.com') || event.request.url.includes('marine-api')) {
-    event.respondWith(fetch(event.request));
-  } else {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
-      })
-    );
+    return event.respondWith(fetch(event.request));
   }
+
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
 });
