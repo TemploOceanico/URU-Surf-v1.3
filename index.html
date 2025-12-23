@@ -261,7 +261,7 @@
             const mU=`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_period,wave_direction,sea_surface_temperature&timezone=${TIMEZONE}`;
             try{
                 document.getElementById('main-verdict').innerHTML='<i class="fas fa-circle-notch fa-spin text-gray-400"></i>';
-                const[wR,mR]=await Promise.all([fetch(wU),fetch(mR)]);
+                const[wR,mR]=await Promise.all([fetch(wU),fetch(mU)]);
                 updateUI(await wR.json(),await mR.json());
             }catch(e){console.error(e);alert("Error de conexión.");}
         }
@@ -353,6 +353,7 @@
     </script>
 </body>
 </html>
+
 
 
 
